@@ -37,21 +37,21 @@ const (
 type NFIPCommunities []NFIPCommunity
 
 type NFIPCommunity struct {
-	CID                    int       `json:"cid"`
-	CommunityName          string    `json:"community_name"`
-	County                 string    `json:"county"`
-	FHBMIdentified         time.Time `json:"fhbm_identified"`
-	FIRMIdentified         time.Time `json:"firm_identified"`
-	CurrEffMapDate         time.Time `json:"curr_eff_map_date"`
-	RegEmerDate            time.Time `json:"reg_emer_date"`
-	Tribal                 bool      `json:"tribal"`
-	CRSEntryDate           string    `json:"crs_entry_date"`
-	CurrEffDate            string    `json:"curr_eff_date"`
-	CurClass               string    `json:"cur_class"`
-	PercentDiscSFHA        string    `json:"percent_disc_sfha"`
-	PercentNonSFHA         string    `json:"percent_non_sfha"`
-	Program                string    `json:"program"`
-	ParticipatingCommunity bool      `json:"participating_community"`
+	CID                    int        `json:"cid"`
+	CommunityName          string     `json:"community_name"`
+	County                 string     `json:"county"`
+	FHBMIdentified         *time.Time `json:"fhbm_identified"`
+	FIRMIdentified         *time.Time `json:"firm_identified"`
+	CurrEffMapDate         *time.Time `json:"curr_eff_map_date"`
+	RegEmerDate            *time.Time `json:"reg_emer_date"`
+	Tribal                 bool       `json:"tribal"`
+	CRSEntryDate           string     `json:"crs_entry_date"`
+	CurrEffDate            string     `json:"curr_eff_date"`
+	CurClass               string     `json:"cur_class"`
+	PercentDiscSFHA        string     `json:"percent_disc_sfha"`
+	PercentNonSFHA         string     `json:"percent_non_sfha"`
+	Program                string     `json:"program"`
+	ParticipatingCommunity bool       `json:"participating_community"`
 }
 
 var ErrEmptyString = fmt.Errorf("string is empty")
@@ -147,7 +147,6 @@ func unmarshal(reader *csv.Reader) (NFIPCommunities, error) {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		var date time.Time
 		var boolVal bool
 
 		// Clean all of the data by trimming off '=' and '"' characters
@@ -173,30 +172,30 @@ func unmarshal(reader *csv.Reader) (NFIPCommunities, error) {
 		nc.CommunityName = record[POSCommunityName]
 		nc.County = record[POSCounty]
 
-		date, err = parseDate(record[POSFHBMIdentified])
+		fhbmIdentifiedDate, err := parseDate(record[POSFHBMIdentified])
 		if err == nil {
-			nc.FHBMIdentified = date
+			nc.FHBMIdentified = &fhbmIdentifiedDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		date, err = parseDate(record[POSFIRMIdentified])
+		firmIdentifiedDate, err := parseDate(record[POSFIRMIdentified])
 		if err == nil {
-			nc.FIRMIdentified = date
+			nc.FIRMIdentified = &firmIdentifiedDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		date, err = parseDate(record[POSCurrEffMapDate])
+		currEffMapDate, err := parseDate(record[POSCurrEffMapDate])
 		if err == nil {
-			nc.CurrEffMapDate = date
+			nc.CurrEffMapDate = &currEffMapDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		date, err = parseDate(record[POSRegEmerDate])
+		regEmerDate, err := parseDate(record[POSRegEmerDate])
 		if err == nil {
-			nc.RegEmerDate = date
+			nc.RegEmerDate = &regEmerDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
