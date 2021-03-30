@@ -26,7 +26,7 @@ func main() {
 	sm.Handle("/search", sh)
 
 	s := http.Server{
-		Addr:         ":9001",
+		Addr:         ":80",
 		Handler:      sm,
 		ErrorLog:     l,
 		ReadTimeout:  5 * time.Second,
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	go func() {
-		l.Println("Starting server on port 9001")
+		l.Println("Starting server on port 80")
 
 		err := s.ListenAndServe()
 		if err != nil {
