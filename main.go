@@ -21,12 +21,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	sh := handlers.NewSearch(l, cb)
+	sh := handlers.NewStatus(l, cb)
 	sm := http.NewServeMux()
-	sm.Handle("/search", sh)
+	sm.Handle("/status", sh)
 
 	s := http.Server{
-		Addr:         ":80",
+		Addr:         ":9001",
 		Handler:      sm,
 		ErrorLog:     l,
 		ReadTimeout:  5 * time.Second,
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	go func() {
-		l.Println("Starting server on port 80")
+		l.Println("Starting server on port 9001")
 
 		err := s.ListenAndServe()
 		if err != nil {
