@@ -14,7 +14,8 @@ import (
 	"time"
 )
 
-var NFIPCommunityBookFileName = "nation.csv"
+var NFIPCommunityStatusBookFileName = "nation.csv"
+var NFIPCommunityStatusBookURL = "https://www.fema.gov/cis/nation.csv"
 
 const (
 	POSCID = iota
@@ -34,7 +35,7 @@ const (
 	POSParticipatingCommunity
 )
 
-type NFIPCommunities []NFIPCommunity
+type NFIPCommunityStatuses []NFIPCommunity
 
 type NFIPCommunity struct {
 	CID                    int        `json:"cid"`
@@ -57,10 +58,10 @@ type NFIPCommunity struct {
 var ErrEmptyString = fmt.Errorf("string is empty")
 var ErrInvalidDateString = fmt.Errorf("invalid date string")
 
-func GetNFIPCommunityBook(l *log.Logger) (NFIPCommunities, error) {
-	if _, err := os.Stat(NFIPCommunityBookFileName); os.IsNotExist(err) {
+func GetNFIPCommunityStatusBook(l *log.Logger) (NFIPCommunityStatuses, error) {
+	if _, err := os.Stat(NFIPCommunityStatusBookFileName); os.IsNotExist(err) {
 		l.Println("NFIP Community book does not exist. Downloading...")
-		resp, err := http.Get("https://www.fema.gov/cis/nation.csv")
+		resp, err := http.Get(NFIPCommunityStatusBookURL)
 
 		if err != nil {
 			l.Println("** Err -", err)
@@ -68,7 +69,7 @@ func GetNFIPCommunityBook(l *log.Logger) (NFIPCommunities, error) {
 		}
 		defer resp.Body.Close()
 
-		f, err := os.Create(NFIPCommunityBookFileName)
+		f, err := os.Create(NFIPCommunityStatusBookFileName)
 
 		if err != nil {
 			l.Println("** Err -", err)
@@ -79,7 +80,7 @@ func GetNFIPCommunityBook(l *log.Logger) (NFIPCommunities, error) {
 		defer f.Close()
 	}
 
-	f, err := os.Open(NFIPCommunityBookFileName)
+	f, err := os.Open(NFIPCommunityStatusBookFileName)
 
 	if err != nil {
 		l.Println("Could not open NFIP Community book")
@@ -99,8 +100,8 @@ func GetNFIPCommunityBook(l *log.Logger) (NFIPCommunities, error) {
 	return communities, nil
 }
 
-func (c NFIPCommunities) Search(term string) *NFIPCommunities {
-	var matchingCommunities NFIPCommunities
+func (c NFIPCommunityStatuses) Search(term string) *NFIPCommunityStatuses {
+	var matchingCommunities NFIPCommunityStatuses
 	term = strings.ToLower(term)
 
 	for _, community := range c {
@@ -114,17 +115,17 @@ func (c NFIPCommunities) Search(term string) *NFIPCommunities {
 	return &matchingCommunities
 }
 
-func (c *NFIPCommunities) ToJSON(w io.Writer) error {
+func (c *NFIPCommunityStatuses) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(c)
 }
 
-func (c *NFIPCommunities) addCommunity(comm *NFIPCommunity) {
+func (c *NFIPCommunityStatuses) addCommunity(comm *NFIPCommunity) {
 	*c = append(*c, *comm)
 }
 
-func unmarshal(reader *csv.Reader) (NFIPCommunities, error) {
-	var communities NFIPCommunities
+func unmarshal(reader *csv.Reader) (NFIPCommunityStatuses, error) {
+	var communities NFIPCommunityStatuses
 	var lineNumber int = 1
 	var firstPass bool = true
 

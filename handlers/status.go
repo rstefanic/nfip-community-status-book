@@ -9,10 +9,10 @@ import (
 
 type Status struct {
 	l  *log.Logger
-	cb data.NFIPCommunities
+	cb data.NFIPCommunityStatuses
 }
 
-func NewStatus(l *log.Logger, cb data.NFIPCommunities) Status {
+func NewStatus(l *log.Logger, cb data.NFIPCommunityStatuses) Status {
 	return Status{l, cb}
 }
 

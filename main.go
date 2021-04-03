@@ -14,7 +14,7 @@ import (
 
 func main() {
 	l := log.New(os.Stdout, "NFIP Community Book: ", log.LstdFlags)
-	cb, err := data.GetNFIPCommunityBook(l)
+	cb, err := data.GetNFIPCommunityStatusBook(l)
 
 	if err != nil {
 		l.Println(err.Error())
