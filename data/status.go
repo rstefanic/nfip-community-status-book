@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var NFIPCommunityStatusBookFileName = "nation.csv"
+var NFIPCommunityStatusBookFilename = "nation.csv"
 var NFIPCommunityStatusBookURL = "https://www.fema.gov/cis/nation.csv"
 
 const (
@@ -59,7 +59,7 @@ var ErrEmptyString = fmt.Errorf("string is empty")
 var ErrInvalidDateString = fmt.Errorf("invalid date string")
 
 func GetNFIPCommunityStatusBook(l *log.Logger) (NFIPCommunityStatuses, error) {
-	if _, err := os.Stat(NFIPCommunityStatusBookFileName); os.IsNotExist(err) {
+	if _, err := os.Stat(NFIPCommunityStatusBookFilename); os.IsNotExist(err) {
 		l.Println("NFIP Community book does not exist. Downloading...")
 		resp, err := http.Get(NFIPCommunityStatusBookURL)
 
@@ -69,7 +69,7 @@ func GetNFIPCommunityStatusBook(l *log.Logger) (NFIPCommunityStatuses, error) {
 		}
 		defer resp.Body.Close()
 
-		f, err := os.Create(NFIPCommunityStatusBookFileName)
+		f, err := os.Create(NFIPCommunityStatusBookFilename)
 
 		if err != nil {
 			l.Println("** Err -", err)
@@ -80,7 +80,7 @@ func GetNFIPCommunityStatusBook(l *log.Logger) (NFIPCommunityStatuses, error) {
 		defer f.Close()
 	}
 
-	f, err := os.Open(NFIPCommunityStatusBookFileName)
+	f, err := os.Open(NFIPCommunityStatusBookFilename)
 
 	if err != nil {
 		l.Println("Could not open NFIP Community book")
