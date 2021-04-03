@@ -27,15 +27,15 @@ func (s Status) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 func (s Status) getStatus(rw http.ResponseWriter, r *http.Request) {
 	queries := r.URL.Query()
-	term := queries.Get("search")
+	search := queries.Get("search")
 
-	if len(term) == 0 {
+	if len(search) == 0 {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	s.l.Printf("Requested search for term \"%s\"\n", term)
-	communities := s.cb.Search(term)
+	s.l.Printf("[STATUS] Requested search for term \"%s\"\n", search)
+	communities := s.cb.Search(search)
 	err := communities.ToJSON(rw)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
