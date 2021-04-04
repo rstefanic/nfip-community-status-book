@@ -21,9 +21,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	crs, err := data.GetNFIPCommunityRatingSystem(l)
+	if err != nil {
+		l.Println(err.Error())
+		os.Exit(1)
+	}
+
 	sh := handlers.NewStatus(l, cb)
+	rh := handlers.NewRating(l, crs)
 	sm := http.NewServeMux()
+
 	sm.Handle("/status", sh)
+	sm.Handle("/rating", rh)
 
 	s := http.Server{
 		Addr:         ":9001",
