@@ -35,8 +35,8 @@ func (s Status) getStatus(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	s.l.Printf("[STATUS] Requested search for term \"%s\"\n", search)
-	communities := s.cb.Search(search)
-	err := communities.ToJSON(rw)
+	communityStatuses := s.cb.Search(search)
+	err := communityStatuses.ToJSON(rw)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 	}
