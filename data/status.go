@@ -14,30 +14,30 @@ import (
 	"time"
 )
 
-var NFIPCommunityStatusBookFilename = "nation.csv"
-var NFIPCommunityStatusBookURL = "https://www.fema.gov/cis/nation.csv"
+const NFIPCommunityStatusBookFilename = "nation.csv"
+const NFIPCommunityStatusBookURL = "https://www.fema.gov/cis/nation.csv"
 
 const (
-	POSCID = iota
-	POSCommunityName
-	POSCounty
-	POSFHBMIdentified
-	POSFIRMIdentified
-	POSCurrEffMapDate
-	POSRegEmerDate
-	POSTribal
-	POSCRSEntryDate
-	POSCurrEffDate
-	POSCurClass
-	POSPercentDiscSFHA
-	POSPercentNonSFHA
-	POSProgram
-	POSParticipatingCommunity
+	StatusCID = iota
+	StatusCommunityName
+	StatusCounty
+	StatusFHBMIdentified
+	StatusFIRMIdentified
+	StatusCurrEffMapDate
+	StatusRegEmerDate
+	StatusTribal
+	StatusCRSEntryDate
+	StatusCurrEffDate
+	StatusCurClass
+	StatusPercentDiscSFHA
+	StausPercentNonSFHA
+	StatusProgram
+	StatusParticipatingCommunity
 )
 
-type NFIPCommunityStatuses []NFIPCommunity
+type NFIPCommunityStatuses []NFIPCommunityStatus
 
-type NFIPCommunity struct {
+type NFIPCommunityStatus struct {
 	CID                    int        `json:"cid"`
 	CommunityName          string     `json:"community_name"`
 	County                 string     `json:"county"`
@@ -120,7 +120,7 @@ func (c *NFIPCommunityStatuses) ToJSON(w io.Writer) error {
 	return e.Encode(c)
 }
 
-func (c *NFIPCommunityStatuses) addCommunity(comm *NFIPCommunity) {
+func (c *NFIPCommunityStatuses) addCommunity(comm *NFIPCommunityStatus) {
 	*c = append(*c, *comm)
 }
 
@@ -155,10 +155,10 @@ func unmarshal(reader *csv.Reader) (NFIPCommunityStatuses, error) {
 			record[i] = strings.Trim(record[i], "\"=")
 		}
 
-		nc := NFIPCommunity{}
+		nc := NFIPCommunityStatus{}
 
 		// Trim the leading "=" before each CID number
-		cidString := record[POSCID]
+		cidString := record[StatusCID]
 
 		if len(cidString) > 0 {
 			cid, err := strconv.Atoi(cidString)
@@ -170,52 +170,52 @@ func unmarshal(reader *csv.Reader) (NFIPCommunityStatuses, error) {
 			nc.CID = cid
 		}
 
-		nc.CommunityName = record[POSCommunityName]
-		nc.County = record[POSCounty]
+		nc.CommunityName = record[StatusCommunityName]
+		nc.County = record[StatusCounty]
 
-		fhbmIdentifiedDate, err := parseDate(record[POSFHBMIdentified])
+		fhbmIdentifiedDate, err := parseDate(record[StatusFHBMIdentified])
 		if err == nil {
 			nc.FHBMIdentified = &fhbmIdentifiedDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		firmIdentifiedDate, err := parseDate(record[POSFIRMIdentified])
+		firmIdentifiedDate, err := parseDate(record[StatusFIRMIdentified])
 		if err == nil {
 			nc.FIRMIdentified = &firmIdentifiedDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		currEffMapDate, err := parseDate(record[POSCurrEffMapDate])
+		currEffMapDate, err := parseDate(record[StatusCurrEffMapDate])
 		if err == nil {
 			nc.CurrEffMapDate = &currEffMapDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		regEmerDate, err := parseDate(record[POSRegEmerDate])
+		regEmerDate, err := parseDate(record[StatusRegEmerDate])
 		if err == nil {
 			nc.RegEmerDate = &regEmerDate
 		} else if err != nil && err != ErrEmptyString && err != ErrInvalidDateString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		boolVal, err = parseBoolFromYesNo(record[POSTribal])
+		boolVal, err = parseBoolFromYesNo(record[StatusTribal])
 		if err == nil {
 			nc.Tribal = boolVal
 		} else if err != nil && err != ErrEmptyString {
 			return nil, fmt.Errorf("** ERR: %s on line %d", err.Error(), lineNumber)
 		}
 
-		nc.CRSEntryDate = record[POSCRSEntryDate]
-		nc.CurrEffDate = record[POSCurrEffDate]
-		nc.CurClass = record[POSCurClass]
-		nc.PercentDiscSFHA = record[POSPercentDiscSFHA]
-		nc.PercentNonSFHA = record[POSPercentNonSFHA]
-		nc.Program = record[POSProgram]
+		nc.CRSEntryDate = record[StatusCRSEntryDate]
+		nc.CurrEffDate = record[StatusCurrEffDate]
+		nc.CurClass = record[StatusCurClass]
+		nc.PercentDiscSFHA = record[StatusPercentDiscSFHA]
+		nc.PercentNonSFHA = record[StausPercentNonSFHA]
+		nc.Program = record[StatusProgram]
 
-		boolVal, err = parseBoolFromYesNo(record[POSParticipatingCommunity])
+		boolVal, err = parseBoolFromYesNo(record[StatusParticipatingCommunity])
 		if err == nil {
 			nc.ParticipatingCommunity = boolVal
 		} else if err != nil && err != ErrEmptyString {
