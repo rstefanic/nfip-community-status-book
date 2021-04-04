@@ -94,7 +94,7 @@ func GetNFIPCommunityRatingSystem(l *log.Logger) (NFIPCommunityRatings, error) {
 		cr.State = getFormattedCellValue(r, RatingState)
 		cr.CommunityNumber = getFormattedCellValue(r, RatingCommunityNumber)
 		cr.CommunityName = getFormattedCellValue(r, RatingCommunityName)
-		cr.CRSEntryDate = getFormattedCellValue(r, StatusCRSEntryDate)
+		cr.CRSEntryDate = getFormattedCellValue(r, RatingCRSEntryDate)
 		cr.CurrentEffectiveDate = getFormattedCellValue(r, RatingCurrentEffectiveDate)
 		cr.CurrentClass = getFormattedCellValue(r, RatingCurrentClass)
 		cr.DiscountForSFHA = getFormattedCellValue(r, RatingDiscountForSFHA)
